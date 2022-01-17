@@ -1,37 +1,40 @@
 # To What Extent do Deep Learning-based Code Recommenders Generate Predictions by Cloning Code from the Training Set?
 
 This is the replication package of the paper "To What Extent do Deep Learning-based Code Recommenders Generate Predictions by Cloning Code from the Training Set?".
-In this empirical study, we trained the T5 model to understand whether it tends to copy blocks of code already seen during the training.
+In this empirical study, we specialized the T5 model of a previous work conducted by [Ciniselli et al.](https://github.com/mciniselli/T5_Replication_Package) to understand the T5 tendency of reusing blocks of code seen during the training phase.
 
 # Pipeline
 
 * #### Pre-training
-    [Here](https://github.com/mciniselli/T5_Replication_Package) you can find:
+
+    We re-used the pre-training of [Ciniselli et al.](https://github.com/mciniselli/T5_Replication_Package); Therefore, the following elements have been used as-is without further changes:
     - the pre-training dataset
     - the pre-trained model
     - the tokenizer that has been used both for pre-training and fine-tuning.
 
 * #### Fine-tuning Dataset
 
-    We created 4 different dataset using the four different thresholds that can be found in the paper
-    The datasets can be found [here](https://zenodo.org/record/5823006#.YdX9eX3MJb8)
-    The algorithm used for filtering can be found [here](https://github.com/github/CodeSearchNet/blob/master/src/dataextraction/dedup_split.py)
+    We created four different datasets for the four different thresholds used in our analysis as reported in our paper in Section 2.2 "Study Context: Datasets Construction".
+    The four datasets can be found at the following [link](https://zenodo.org/record/5823006#.YdX9eX3MJb8)
+    The original algorithm used for filtering near-duplicates can be found at this [link](https://github.com/github/CodeSearchNet/blob/master/src/dataextraction/dedup_split.py)
 
 * ##### Hyper Parameter Tuning
 
-    We did hyper parameter tuning to find the best model for the fine-tuning using the `Very_Weak` dataset.
-    We tested 4 configuration and trained the model for 100k steps.
+    We performed the hyper-parameter (HP) tuning to find the best model for the fine-tuning using the `Very_Weak` dataset.
+    We tested four configurations and trained the model for 100k steps.
     The configurations are the following:
     - constant learning rate (lr = 0.001)
     - Inverse Square Root (warmup_steps = 10000)
     - slanted (cut_fraction=0.1, ratio=32, max_learning_rate=0.01, start_step=0)
     - polynomial learning rate (starter_learning_rate=0.01, end_learning_rate=1e-6, decay_step=10000, power=0.5)
     
-    You can find the notebooks in `HP_Tuning/pretraining_script`.
-    The configuration files for each HP tuning are in `HP_Tuning/configuration_files`.
-    You can find the script to evaluate the performances in the `HP_Tuning/evaluation` folder.
-    First, you need to run `evaluate.ipynb` to generate the predictions for each configuration.
-    Then, you can run the following command:
+    Specifically:
+    - `HP_Tuning/pretraining_script` contains the notebook scripts used in [Colab](https://colab.research.google.com/).
+    - `HP_Tuning/configuration_files` contains the configuration file for each HP tuning.
+    - `HP_Tuning/evaluation` contains the folder with the scripts used to evaluate the performance.
+
+    First, execute `evaluate.ipynb` to generate the predictions for each configuration.
+    Then, the execute the following command:
     ```
     python3 perfect_predictions.py --prediction_file "<prediction_file>" --target_file "<target_file>" --length_file "<length_file>"
     ```
@@ -39,11 +42,12 @@ In this empirical study, we trained the T5 model to understand whether it tends 
     - **prediction_file** contains the prediction of each mode;
     - **target_file** contains the target 
     - **length_file** contains the file with the number of masked lines for each prediction
-    You can find the prediction and targets in `HP_Tuning/predictions` folder and the length in `HP_Tuning/length` folder
+
+    `HP_Tuning/predictions` folder contains the predictions and targets, while `HP_Tuning/length` folder contains the length.
 
     The HP tuning models can be found [here](https://zenodo.org/record/5823314#.YdYItH3MJb8)
-    The result of the 4 configuration tested in terms of perfect prediction are the following:
-    | Configuration | Perfect Predictions |
+    The result of the four configuration tested in terms of correct prediction are the following:
+    | Configuration | Correct Predictions |
     |---------------|---------------------|
     | Slanted       |         583 (3.69%) |
     | Constant      |         522 (3.31%) |
@@ -52,9 +56,9 @@ In this empirical study, we trained the T5 model to understand whether it tends 
     
 * #### Fine-tuning
     
-    The best HP configuration is **Slanted Triangular**.
-    We fine-tuned the model for around 100 epochs, changing the number of steps based on the dataset size.
-    In the table you can find the number of steps for each dataset
+    From our analysis emerged that **Slanted Triangular** is the best HP configuration.
+    Thus, we selected this model and fine-tuned it for around 100 epochs, changing the number of steps based on the dataset size.
+    The following table shows the number of steps for each dataset
     | Dataset     | Steps |
     |-------------|-------|
     | Very Strong |  152k |
@@ -62,20 +66,21 @@ In this empirical study, we trained the T5 model to understand whether it tends 
     | Weak        |  400k |
     | Very Weak   |  470k |
     
-    In the `Finetuning/configuration_file` folder you can find the configuration files for each dataset, while in `Finetuning/script` you can find the script for training each model.
-    In `Finetuning/evaluation` folder you can find the script for evaluating the model (it works in the same way as the Hyper Parameter Tuning script.
-    You can find the finetuning models [here](https://zenodo.org/record/5823314#.YdYItH3MJb8)
-    The script for evaluating the score of T5 can be found in `Finetuning/score` folder
-    The predictions of each model (that have to be used also for the summary creation presented below) can be found in `Finetuning/predictions`
-    Each model achieved the following perfect predictions:
-    | Configuration | Perfect Predictions |
+    The `Finetuning/configuration_file` folder contains the configuration files for each dataset, while `Finetuning/script` is the script for training each model.
+    The `Finetuning/evaluation` folder contains the script for evaluating the model (it works in the same way as the Hyper Parameter Tuning script.
+    You can find the fine-tuning models [here](https://zenodo.org/record/5823314#.YdYItH3MJb8)
+    The `Finetuning/score` folder contains the script for evaluating the score of T5.
+    Finally, the `Finetuning/predictions` folder contains the predictions of each model (that have to be used also for the summary creation presented below)
+
+    Each model achieved the following correct predictions:
+    | Configuration | Correct Predictions |
     |---------------|---------------------|
     | Very Strong   |         487 (3.09%) |
     | Constant      |         514 (3.27%) |
     | ISR           |         573 (3.64%) |
     | Polynomial    |         576 (3.66%) |
 
-    We also analyzed 50 random predictions for each model to classify them into **Perfect** (if the syntax is perfect and the code makes sense), **Meaningful** (if the syntax is perfect but the code did not make sense, e.g., assigning the same variable to two different values in the next line) and **Meaningless** (if the code has no sense, e.g., repeating multiple time the same instruction)
+    We also analyzed 50 random predictions for each model to classify them into **Correct** (if the syntax is correct and the code makes sense), **Meaningful** (if the syntax is correct but the code did not make sense, e.g., assigning the same variable to two different values in the next line) and **Meaningless** (if the code has no sense, e.g., repeating multiple time the same instruction)
 
 
 * #### Clone Detection
@@ -105,7 +110,8 @@ In this empirical study, we trained the T5 model to understand whether it tends 
     
 * #### Extra Details    
     
-    To compute the Cyclomatic Complexity Number (CCN) we used lizard 1.17.9 version running on the shell the following command:
+    To compute the Cyclomatic Complexity Number (CCN) we used [lizard](https://pypi.org/project/lizard/) 1.17.9 version.
+    In particular, we execute the following command:
 
     ```
     lizard all_methods/ > all_methods.txt
@@ -120,3 +126,18 @@ In this empirical study, we trained the T5 model to understand whether it tends 
     You can find the script, the results and a detailed README in `Cloning/Correlation` folder.
     
     The list of the prediction with the unknown token can be found in `Cloning/Unknown_Predictions`. It contains a list of integers ranging from 0 to 15741. The element 1 implies that the second prediction contains an unknown token in the prediction of at least one of the four trained models.
+
+
+# Acknowledgment
+
+    We aim to acknowledge:
+    - The authors of the "[An Empirical Study on the Usage of Transformer Models for Code Completion](https://github.com/mciniselli/T5_Replication_Package)" for publicly releasing the replication package of their study on which we built our study;
+    - The authors and contributors of the [CodeSearchNet](https://github.com/github/CodeSearchNet) project for providing a lightweight implementation of the algorithm used to detect near-duplicates.
+
+
+# Contributors
+    ANONYMOUS AUTHORS
+
+# License
+    This software is licensed under the MIT License.
+
