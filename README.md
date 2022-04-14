@@ -136,7 +136,9 @@ In this empirical study, we specialized the T5 model of a previous work conducte
 
 
 # Contributors
-    ANONYMOUS AUTHORS
+    Matteo Ciniselli
+    Luca Pascarella
+    Gabriele Bavota
 
 # License
     This software is licensed under the MIT License.
