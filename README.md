@@ -1,6 +1,6 @@
 # To What Extent do Deep Learning-based Code Recommenders Generate Predictions by Cloning Code from the Training Set?
 
-This is the replication package of the paper "To What Extent do Deep Learning-based Code Recommenders Generate Predictions by Cloning Code from the Training Set?".
+This is the replication package of the paper "[To What Extent do Deep Learning-based Code Recommenders Generate Predictions by Cloning Code from the Training Set?](http://arxiv.org/abs/2204.06894)".
 In this empirical study, we specialized the T5 model of a previous work conducted by [Ciniselli et al.](https://github.com/mciniselli/T5_Replication_Package) to understand the T5 tendency of reusing blocks of code seen during the training phase.
 
 # Pipeline
@@ -134,6 +134,10 @@ In this empirical study, we specialized the T5 model of a previous work conducte
     - The authors of the "[An Empirical Study on the Usage of Transformer Models for Code Completion](https://github.com/mciniselli/T5_Replication_Package)" for publicly releasing the replication package of their study on which we built our study;
     - The authors and contributors of the [CodeSearchNet](https://github.com/github/CodeSearchNet) project for providing a lightweight implementation of the algorithm used to detect near-duplicates.
 
+# Paper
+
+Published at the International Conference of Mining Software Repositories 2022 
+[Preprint](http://arxiv.org/abs/2204.06894)
 
 # Contributors
     Matteo Ciniselli
